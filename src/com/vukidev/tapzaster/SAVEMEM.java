@@ -29,14 +29,20 @@ public class SAVEMEM {
 	public static BigInteger phonesupg = BI_ZERO;
 	public static BigInteger Techzasters = BI_ONE;
 	public static BigInteger Mods = BI_ONE;
+	public static BigInteger Unbricked = BI_ONE;
+	public static BigInteger Romdown = BI_ONE;
 	
 	public static int SuperUpgradeFinal = 20;
 	
 	public static int hasSDCard = 0;
 	public static int hasTWRP = 0;
 	public static int hasROMs = 0;
+	public static int hasFasInt = 0;
+	public static int hasPhonePar = 0;
 
 	public static BigInteger costSD = new BigInteger("2500");
 	public static BigInteger costTWRP = new BigInteger("10500");
 	public static BigInteger costROMs = new BigInteger("125500");
+	public static BigInteger costFasInt = new BigInteger("2255000");
+	public static BigInteger costPhonePar = new BigInteger("3556410");
 }

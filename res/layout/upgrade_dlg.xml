@@ -47,6 +47,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Mod a Phone" />
+						
+					<Button 
+                        android:id="@+id/buy_upgrade_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Unbrick a Phone" />
+						
+					<Button 
+                        android:id="@+id/buy_upgrade_5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Rom Downloader" />
                 </LinearLayout>
             </ScrollView>
 
@@ -74,7 +86,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="3000 Roms (cost 125.5k)" />
-
+					<Button 
+                        android:id="@+id/buy_item_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Fast Internet (cost 2.25M)" />
+					<Button 
+                        android:id="@+id/buy_item_5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Phone Parts (cost 3.55M)" />
                 </LinearLayout>
             </ScrollView>
         </FrameLayout>

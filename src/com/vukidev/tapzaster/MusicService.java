@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class MusicService extends Service {
     private MediaPlayer mp;
-    private String[] playlist = {"music/music1.mp3", "music/music2.mp3"};
+    private String[] playlist = {"music/music1.mp3", "music/music2.mp3", "music/music3.mp3", "music/music4.mp3"};
     private Random random = new Random();
 
     @Override
@@ -32,22 +32,37 @@ public class MusicService extends Service {
 		return START_STICKY;
 	}
     private void playNext() {
-        try {
-            if (mp != null) { mp.release(); }
-            mp = new MediaPlayer();
-            
-            AssetFileDescriptor afd = getAssets().openFd(playlist[random.nextInt(playlist.length)]);
-            mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            afd.close();
+		try {
+			if (mp != null) {
+				mp.stop();    // Stop the actual playback
+				mp.release(); // Kill the memory
+				mp = null;    // Help the GC see it's gone
+			}
+			
+			mp = new MediaPlayer();
+			
+			// Pick a random song
+			String songPath = playlist[random.nextInt(playlist.length)];
+			AssetFileDescriptor afd = getAssets().openFd(songPath);
+			
+			// Android 1.0 specific check
+			if (afd != null) {
+				mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+				afd.close(); // Close descriptor as soon as source is set
+			}
 
-            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                public void onCompletion(MediaPlayer p) { playNext(); }
-            });
+			mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+				public void onCompletion(MediaPlayer p) { 
+					playNext(); 
+				}
+			});
 
-            mp.prepare();
-            mp.start();
-        } catch (Exception e) { e.printStackTrace(); }
-    }
+			mp.prepare();
+			mp.start();
+		} catch (Exception e) { 
+			e.printStackTrace(); 
+		}
+	}
 
     @Override
     public void onDestroy() {

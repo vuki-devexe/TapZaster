@@ -51,9 +51,13 @@ public class SaveSys {
 		editor.putString("phoneupg_slot" + slot, SAVEMEM.phonesupg.toString());
 		editor.putString("techs_slot" + slot, SAVEMEM.Techzasters.toString());
 		editor.putString("mods_slot" + slot, SAVEMEM.Mods.toString());
+		editor.putString("unbrick_slot" + slot, SAVEMEM.Unbricked.toString());
+		editor.putString("romdown_slot" + slot, SAVEMEM.Romdown.toString());
 		editor.putInt("sdcard_slot" + slot, SAVEMEM.hasSDCard);
 		editor.putInt("twrp_slot" + slot, SAVEMEM.hasTWRP);
 		editor.putInt("roms_slot" + slot, SAVEMEM.hasROMs);
+		editor.putInt("fasint_slot" + slot, SAVEMEM.hasFasInt);
+		editor.putInt("phonepar_slot" + slot, SAVEMEM.hasPhonePar);
 		
 		// Remember which slot was used last for auto-loading
 		editor.putInt("lastslot", slot);
@@ -69,9 +73,13 @@ public class SaveSys {
 		String savedPhones = prefs.getString("phoneupg_slot" + slot, "0");
 		String savedTech = prefs.getString("techs_slot" + slot, "1");
 		String savedMods = prefs.getString("mods_slot" + slot, "1");
+		SAVEMEM.Unbricked = new java.math.BigInteger(prefs.getString("unbrick_slot" + slot, "1"));
+		SAVEMEM.Romdown = new java.math.BigInteger(prefs.getString("romdown_slot" + slot, "1"));
 		SAVEMEM.hasSDCard = prefs.getInt("sdcard_slot" + slot, 0);
 		SAVEMEM.hasTWRP = prefs.getInt("twrp_slot" + slot, 0);
 		SAVEMEM.hasROMs = prefs.getInt("roms_slot" + slot, 0);
+		SAVEMEM.hasFasInt = prefs.getInt("fasint_slot" + slot, 0);
+		SAVEMEM.hasPhonePar = prefs.getInt("phonepar_slot" + slot, 0);
 		
 		int savedFINALMULTINT = prefs.getInt("MULTFIN_slot" + slot, 20);
 		//String saved = prefs.getString("_slot" + slot, "1");
@@ -82,46 +90,20 @@ public class SaveSys {
 		SAVEMEM.Mods = new java.math.BigInteger(savedMods);
 		
 		SAVEMEM.phones = SAVEMEM.phonesupg; 
-		if (SAVEMEM.hasSDCard == 1) {
+		if (SAVEMEM.hasPhonePar == 1) {
+			SAVEMEM.SuperUpgradeFinal = 2000;
+			
+		} else if (SAVEMEM.hasSDCard == 1) {
 			SAVEMEM.SuperUpgradeFinal = 200;
-		}else {
+		}
+		else {
 			SAVEMEM.SuperUpgradeFinal = 20;
 		}
 		if (StatusText != null) {
 			StatusText.setText(formatBigInt(SAVEMEM.SCORE));
 		}
 	}
-	public static void saveToSlot(Activity activity, String slotName) {
-		String scoreToSave = activity.getIntent().getStringExtra("score");
-		String phonesToSave = activity.getIntent().getStringExtra("phones");
-		String techToSave = activity.getIntent().getStringExtra("techs");
-		String modsToSave = activity.getIntent().getStringExtra("mods");
-
-		android.content.SharedPreferences prefs = activity.getSharedPreferences("ZasterPrefs", activity.MODE_PRIVATE);
-		android.content.SharedPreferences.Editor editor = prefs.edit();
-
-		int slotNum = slotName.contains("1") ? 1 : 2;
-
-		editor.putString("score_slot" + slotNum, scoreToSave);
-		editor.putString("phoneupg_slot" + slotNum, phonesToSave);
-		editor.putString("techs_slot" + slotNum, techToSave);
-		editor.putString("mods_slot" + slotNum, modsToSave);
-		editor.putInt("sdcard_slot" + slotNum, SAVEMEM.hasSDCard);
-		editor.putInt("twrp_slot" + slotNum, SAVEMEM.hasTWRP);
-		editor.putInt("roms_slot" + slotNum, SAVEMEM.hasROMs);
-		
-		editor.putInt("lastslot", slotNum);
-		
-		editor.commit();
-	}
-
     public static void loadFromSlot(Activity activity, String slotName) {
-		android.content.SharedPreferences prefs = activity.getSharedPreferences("ZasterPrefs", activity.MODE_PRIVATE);
-		android.content.SharedPreferences.Editor editor = prefs.edit();
-
-		int slotNum = slotName.contains("1") ? 1 : 2;
-
-		editor.putInt("lastslot", slotNum);
-		editor.commit();
+		
 	}
 }

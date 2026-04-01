@@ -11,8 +11,9 @@ import android.widget.ScrollView;
 import android.os.Handler;
 import android.media.MediaPlayer;
 import android.content.res.AssetFileDescriptor;
-import android.media.MediaPlayer;
 import android.content.Intent;
+import android.view.ViewGroup;
+import android.view.MotionEvent;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -28,12 +29,15 @@ public class HomeActivity extends Activity {
 	private BigInteger f = BI_ZERO;
 	private BigInteger f2 = BI_ZERO;
 	private BigInteger f3 = BI_ZERO;
+	private BigInteger f4 = BI_ZERO;
+	private BigInteger f5 = BI_ZERO;
 	
 	private TextView StatusText;
 	private MediaPlayer e1, e2, e3, e4;
+	private ImageView zasterBtn;
 	
 	boolean isSwitching = false;
-
+	
 	private String formatBigInt(BigInteger value) {
 		String s = value.toString();
 		int len = s.length();
@@ -70,6 +74,37 @@ public class HomeActivity extends Activity {
 				player.seekTo(0);
 			}
 			player.start();
+		}
+	}
+	private void showFloatingText(float x, float y, String displayValue) {
+		final TextView floatText = new TextView(this);
+		floatText.setText("+" + displayValue);
+		floatText.setTextColor(android.graphics.Color.YELLOW);
+		floatText.setTextSize(25);
+		floatText.setTypeface(null, android.graphics.Typeface.BOLD);
+
+		// Calculate the center of the Zaster
+		float centerX = zasterBtn.getLeft() + (zasterBtn.getWidth() / 2) - 50;
+		float centerY = zasterBtn.getTop() + (zasterBtn.getHeight() / 2) - 50;
+
+		// Add a little randomness so they don't overlap perfectly
+		floatText.setX(centerX + (float)(Math.random() * 100 - 50));
+		floatText.setY(centerY);
+
+		final ViewGroup root = (ViewGroup) findViewById(R.id.main_layout_id);
+		if (root != null) {
+			root.addView(floatText);
+			
+			floatText.animate()
+				.translationYBy(-300) // Float up
+				.alpha(0)             // Fade out
+				.setDuration(800)
+				.withEndAction(new Runnable() {
+					@Override
+					public void run() {
+						root.removeView(floatText);
+					}
+				}).start();
 		}
 	}
 	@Override
@@ -112,19 +147,26 @@ public class HomeActivity extends Activity {
 		startService(musicIntent);
 		
 		StatusText = (TextView) findViewById(R.id.Zasters);
-		ImageView zaster = (ImageView) findViewById(R.id.zaster);
+		zasterBtn = (ImageView) findViewById(R.id.zaster);
 		
 		SaveSys.loadGame(HomeActivity.this, StatusText);
 		
-		zaster.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
+		zasterBtn.setOnClickListener(new View.OnClickListener() {
+			public void onClick(final View v) {
+				
 				BigInteger basePlusphones = BI_ONE.add(SAVEMEM.phones); 
-				BigInteger gain = basePlusphones.multiply(SAVEMEM.Mods);
+				BigInteger gain = basePlusphones.multiply(SAVEMEM.Mods).add(SAVEMEM.Unbricked).multiply(SAVEMEM.Romdown);
 				SAVEMEM.SCORE = SAVEMEM.SCORE.add(gain);
 				StatusText.setText(formatBigInt(SAVEMEM.SCORE));
 				
+				showFloatingText(0, 0, formatBigInt(gain));
 				playeffec(3);
+				v.animate().scaleX(0.9f).scaleY(0.9f).setDuration(50).withEndAction(new Runnable() {
+					@Override
+					public void run() {
+						v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start();
+					}
+				}).start();
 			}
 		});
 		Button optionsBtn = (Button) findViewById(R.id.options_button);
@@ -178,6 +220,10 @@ public class HomeActivity extends Activity {
 		f2 = SAVEMEM.Techzasters.multiply(BigInteger.valueOf(200));
 		// f3 = 500 * (SAVEMEM.Mods * 3.5)
 		f3 = SAVEMEM.Mods.multiply(BigInteger.valueOf(35)).divide(BI_TEN).multiply(BigInteger.valueOf(500));
+		
+		f4 = SAVEMEM.Unbricked.multiply(BigInteger.valueOf(267)).divide(BI_TEN).multiply(BigInteger.valueOf(10000));
+		
+		f5 = SAVEMEM.Mods.multiply(BigInteger.valueOf(267)).divide(BI_TEN).multiply(BigInteger.valueOf(50000));
 	}
 
 	private void showUpgradePopup() {
@@ -200,6 +246,8 @@ public class HomeActivity extends Activity {
 		final Button buyBtn = (Button) dialogView.findViewById(R.id.buy_upgrade_1);
 		final Button buyBtn2 = (Button) dialogView.findViewById(R.id.buy_upgrade_2);
 		final Button buyBtn3 = (Button) dialogView.findViewById(R.id.buy_upgrade_3);
+		final Button buyBtn4 = (Button) dialogView.findViewById(R.id.buy_upgrade_4);
+		final Button buyBtn5 = (Button) dialogView.findViewById(R.id.buy_upgrade_5);
 		final Button closeBtn = (Button) dialogView.findViewById(R.id.close_button);
 
 		android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
@@ -211,6 +259,8 @@ public class HomeActivity extends Activity {
 		buyBtn.setText("Buy a Phone: " + SAVEMEM.phonesupg + " (Cost: " + formatBigInt(f) + ")");
 		buyBtn2.setText("Hire Techzasters: " + SAVEMEM.Techzasters + " (Cost: " + formatBigInt(f2) + ")");
 		buyBtn3.setText("Mod a Phone: " + SAVEMEM.Mods + " (Cost: " + formatBigInt(f3) + ")");
+		buyBtn4.setText("Unbrick a Phone: " + SAVEMEM.Unbricked + " (Cost: " + formatBigInt(f4) + ")");
+		buyBtn5.setText("Rom Downloader: " + SAVEMEM.Romdown + " (Cost: " + formatBigInt(f5) + ")");
 		
 		buyBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -260,6 +310,41 @@ public class HomeActivity extends Activity {
 				}
 			}
 		});
+		
+		buyBtn4.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (SAVEMEM.SCORE.compareTo(f4) >= 0) {
+					if (SAVEMEM.hasTWRP == 1) {
+						SAVEMEM.SCORE = SAVEMEM.SCORE.subtract(f4);
+						SAVEMEM.Unbricked = SAVEMEM.Unbricked.add(BI_ONE);
+						calcrice();
+						buyBtn4.setText("Unbrick a Phone: " + SAVEMEM.Unbricked + " (Cost: " + formatBigInt(f4) + ")");
+						StatusText.setText(formatBigInt(SAVEMEM.SCORE));
+						playeffec(4);
+					}
+				}
+			}
+		});
+
+		buyBtn5.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (SAVEMEM.SCORE.compareTo(f5) >= 0) {
+					if (SAVEMEM.hasFasInt == 1) {
+						SAVEMEM.SCORE = SAVEMEM.SCORE.subtract(f5);
+						SAVEMEM.Romdown = SAVEMEM.Romdown.add(BI_ONE);
+						
+						calcrice();
+						
+						buyBtn5.setText("Rom Downloader: " + SAVEMEM.Romdown + " (Cost: " + formatBigInt(f5) + ")");
+						StatusText.setText(formatBigInt(SAVEMEM.SCORE));
+						playeffec(4);
+					} else {
+					}
+				}
+			}
+		});
 
 		closeBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -271,10 +356,14 @@ public class HomeActivity extends Activity {
 		final Button btnSD = (Button) dialogView.findViewById(R.id.buy_item_1);
 		final Button btnTWRP = (Button) dialogView.findViewById(R.id.buy_item_2);
 		final Button btnROMs = (Button) dialogView.findViewById(R.id.buy_item_3);
+		final Button btnFasInt = (Button) dialogView.findViewById(R.id.buy_item_4);
+		final Button btnPhonePar = (Button) dialogView.findViewById(R.id.buy_item_5);
 
-		if(SAVEMEM.hasSDCard == 1) btnSD.setText("SD Card: OWNED");
-		if(SAVEMEM.hasTWRP == 1) btnTWRP.setText("TWRP: OWNED");
-		if(SAVEMEM.hasROMs == 1) btnROMs.setText("ROMs: OWNED");
+		if(SAVEMEM.hasSDCard == 1) btnSD.setText("SD Card OWNED");
+		if(SAVEMEM.hasTWRP == 1) btnTWRP.setText("TWRP OWNED");
+		if(SAVEMEM.hasROMs == 1) btnROMs.setText("ROMs OWNED");
+		if(SAVEMEM.hasFasInt == 1) btnFasInt.setText("Fast Internet OWNED");
+		if(SAVEMEM.hasPhonePar == 1) btnPhonePar.setText("Phone Parts OWNED");
 
 		btnSD.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -293,6 +382,7 @@ public class HomeActivity extends Activity {
 				}
 			}
 		});
+		
 		btnTWRP.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -326,6 +416,39 @@ public class HomeActivity extends Activity {
 				}
 			}
 		});
+		btnFasInt.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (SAVEMEM.hasFasInt == 0 && SAVEMEM.SCORE.compareTo(SAVEMEM.costFasInt) >= 0) {
+					SAVEMEM.SCORE = SAVEMEM.SCORE.subtract(SAVEMEM.costFasInt);
+					SAVEMEM.hasFasInt = 1;
+					btnFasInt.setText("Fast Internet OWNED");
+					StatusText.setText(formatBigInt(SAVEMEM.SCORE));
+					playeffec(4);
+					android.content.SharedPreferences prefs = getSharedPreferences("ZasterPrefs", MODE_PRIVATE);
+					int lastSlot = prefs.getInt("lastslot", 1);
+					
+					SaveSys.saveGame(HomeActivity.this, lastSlot);
+				}
+			}
+		});
+		btnPhonePar.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (SAVEMEM.hasPhonePar == 0 && SAVEMEM.SCORE.compareTo(SAVEMEM.costPhonePar) >= 0) {
+					SAVEMEM.SCORE = SAVEMEM.SCORE.subtract(SAVEMEM.costPhonePar);
+					SAVEMEM.hasPhonePar = 1;
+					btnPhonePar.setText("Phone Parts OWNED");
+					StatusText.setText(formatBigInt(SAVEMEM.SCORE));
+					playeffec(4);
+					
+					android.content.SharedPreferences prefs = getSharedPreferences("ZasterPrefs", MODE_PRIVATE);
+					int lastSlot = prefs.getInt("lastslot", 1);
+					
+					SaveSys.saveGame(HomeActivity.this, lastSlot);
+				}
+			}
+		});
 		dialog.show();
 	}
 	private Handler autoClickHandler = new Handler();
@@ -333,7 +456,7 @@ public class HomeActivity extends Activity {
     private Runnable autoClickTask = new Runnable() {
         public void run() {
             if (SAVEMEM.Techzasters.compareTo(BI_ONE) > 0) {
-                BigInteger gain = SAVEMEM.Techzasters.subtract(BI_ONE).multiply(BI_FIVE).multiply(SAVEMEM.Mods);
+                BigInteger gain = SAVEMEM.Techzasters.subtract(BI_ONE).multiply(BI_FIVE).multiply(SAVEMEM.Mods).add(SAVEMEM.Unbricked).multiply(SAVEMEM.Romdown);
 				SAVEMEM.SCORE = SAVEMEM.SCORE.add(gain);
 				StatusText.setText(formatBigInt(SAVEMEM.SCORE));
             }

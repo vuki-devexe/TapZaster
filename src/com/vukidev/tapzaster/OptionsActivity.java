@@ -82,17 +82,28 @@ public class OptionsActivity extends Activity {
 
         builder.setPositiveButton("Save Current", new android.content.DialogInterface.OnClickListener() {
             public void onClick(android.content.DialogInterface dialog, int which) {
+                if (slotName == "1") {
+					SaveSys.saveGame(OptionsActivity.this,1);
+				}else if (slotName == "2") {
+					SaveSys.saveGame(OptionsActivity.this,2);
+				}
                 
-                SaveSys.saveToSlot(OptionsActivity.this,slotName);
                 android.widget.Toast.makeText(OptionsActivity.this, "Saved to " + slotName, 0).show();
             }
         });
 
         builder.setNeutralButton("Load This", new android.content.DialogInterface.OnClickListener() {
             public void onClick(android.content.DialogInterface dialog, int which) {
-                
+                android.content.SharedPreferences prefs = getSharedPreferences("ZasterPrefs", MODE_PRIVATE);
+				android.content.SharedPreferences.Editor editor = prefs.edit();
+
+				int slotNum = slotName.contains("1") ? 1 : 2;
+
+				editor.putInt("lastslot", slotNum);
+				editor.commit();
                 SaveSys.loadFromSlot(OptionsActivity.this, slotName);
                 android.widget.Toast.makeText(OptionsActivity.this, "Loaded " + slotName, 0).show();
+				
             }
         });
 
