@@ -2,6 +2,6 @@ app.apk
 k.keystore
 java_files.txt
 
-obj\*
-bin\*
-gen\*
+obj\
+bin\
+gen\
