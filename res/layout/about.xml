@@ -40,6 +40,24 @@
 				android:textSize="10sp"
 				android:gravity="center"
 				android:padding="8dp"/>
+			
+			<TextView
+				android:id="@+id/options_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="Helped fixing bugs"
+				android:textSize="18sp"
+				android:gravity="center"
+				android:padding="10dp"
+				android:textStyle="bold" />
+			<TextView
+				android:id="@+id/options_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="ParaMattKoopa Lolking (YT https://www.youtube.com/@ParaMattYT)"
+				android:textSize="10sp"
+				android:gravity="center"
+				android:padding="8dp"/>
 				
 			<TextView
 				android:id="@+id/options_title"
@@ -81,6 +99,14 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:text="Y0Y0lox (YT @Y0Y0lox-alt)"
+				android:textSize="10sp"
+				android:gravity="center"
+				android:padding="8dp"/>
+			<TextView
+				android:id="@+id/options_title"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="ParaMattKoopa Lolking (YT https://www.youtube.com/@ParaMattYT)"
 				android:textSize="10sp"
 				android:gravity="center"
 				android:padding="8dp"/>

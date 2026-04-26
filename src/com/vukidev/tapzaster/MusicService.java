@@ -27,12 +27,12 @@ public class MusicService extends Service {
         SharedPreferences prefs = getSharedPreferences("ZasterPrefs", MODE_PRIVATE);
         SAVEMEM.MuteMjusic = prefs.getInt("MuteMusic", 0);
         
-        updatePlaylistFromFolder();
+        loadAllMusic();
 
         String action = intent.getAction();
         if (action != null) {
 			if (action.equals("RELOAD_PLAYLIST")) {
-				updatePlaylistFromFolder();
+				loadAllMusic();
 				playNext();
 			} else if (action.equals("PAUSE")) {
 				if (mp != null && mp.isPlaying()) mp.pause();
@@ -48,31 +48,6 @@ public class MusicService extends Service {
         return START_STICKY;
     }
 
-    private void updatePlaylistFromFolder() {
-		playlist.clear();
-		
-		playlist.add("asset:music/music1.mp3");
-		playlist.add("asset:music/music2.mp3");
-		playlist.add("asset:music/music3.mp3");
-		playlist.add("asset:music/music4.mp3");
-
-		String path = "/storage/emulated/0/VukiDev/Tapzaster/CMusic/";
-		java.io.File directory = new java.io.File(path);
-		if (!directory.exists()) {
-			directory.mkdirs();
-		}
-		if (directory.exists()) {
-			java.io.File[] files = directory.listFiles();
-			if (files != null) {
-				for (java.io.File file : files) {
-					String name = file.getName();
-					if (name.endsWith(".mp3") || name.endsWith(".wav")) {
-						playlist.add(file.getAbsolutePath()); 
-					}
-				}
-			}
-		}
-	}
     private void playNext() {
 		if (SAVEMEM.MuteMjusic == 1 || playlist.isEmpty()) return;
 
@@ -112,10 +87,16 @@ public class MusicService extends Service {
 		playlist.add("asset:music/music2.mp3");
 		playlist.add("asset:music/music3.mp3");
 		playlist.add("asset:music/music4.mp3");
+		playlist.add("asset:music/music5.mp3");
+		playlist.add("asset:music/music6.mp3");
+		playlist.add("asset:music/music7.mp3");
 
 		String path = "/storage/emulated/0/VukiDev/Tapzaster/CMusic/";
 		java.io.File directory = new java.io.File(path);
 		java.io.File[] files = directory.listFiles();
+		if (!directory.exists()) {
+			directory.mkdirs();
+		}
 		
 		if (files != null) {
 			for (java.io.File file : files) {

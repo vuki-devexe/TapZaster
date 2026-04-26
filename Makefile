@@ -1,3 +1,6 @@
+# Only i and god knows how this make it compile
+# sence i frogot how it works only god knows how it works
+
 # --- CONFIGURATION ---
 SDK_ROOT = C:/android_sdk
 PLATFORM_JAR = $(SDK_ROOT)/platforms/android-21/android.jar
@@ -32,7 +35,9 @@ setup:
 clean:
 	clear
 	rm -rf $(GEN_DIR) $(OBJ_DIR) $(BIN_DIR)
-
+superclean:
+	rm -rf $(GEN_DIR) $(OBJ_DIR) $(BIN_DIR)
+	rm app.apk java_files.txt
 build_res:
 	$(AAPT) package -f -m \
 		-J $(GEN_DIR) \

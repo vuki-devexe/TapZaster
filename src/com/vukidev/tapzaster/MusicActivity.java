@@ -112,10 +112,13 @@ public class MusicActivity extends Activity {
 	private void scanMusicFolder() {
 		MusicList.clear();
 
-		MusicList.add("asset:music/music1.mp3");
-		MusicList.add("asset:music/music2.mp3");
-		MusicList.add("asset:music/music3.mp3");
-		MusicList.add("asset:music/music4.mp3");
+		MusicList.add("Too slow Y0Y0lox mix by Y0Y0lox");
+		MusicList.add("music2.mp3");
+		MusicList.add("music3.mp3");
+		MusicList.add("music4.mp3");
+		MusicList.add("Tapping Zaster by Y0Y0lox");
+		MusicList.add("music6.mp3");
+		MusicList.add("Dih Song by Besmirch Adulation (matt n' yoyo)");
 		String path = "/storage/emulated/0/VukiDev/Tapzaster/CMusic/";
 		java.io.File directory = new java.io.File(path);
 		

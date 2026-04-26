@@ -531,7 +531,6 @@ public class HomeActivity extends Activity {
 		if (SAVEMEM.SkinPath != null && !SAVEMEM.SkinPath.isEmpty()) {
 			File imgFile = new File(SAVEMEM.SkinPath);
 			
-			// Check if the file actually exists on the SD card
 			if (imgFile.exists()) {
 				Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 				if (zasterBtn != null && myBitmap != null) {
@@ -543,7 +542,6 @@ public class HomeActivity extends Activity {
 
 		// Fallback: If skin wasn't applied (path invalid or file missing)
 		if (!skinApplied && zasterBtn != null) {
-			// Points to res/drawable/techzasteri.png
 			zasterBtn.setImageResource(R.drawable.techzasteri);
 		}
 	}
@@ -556,11 +554,10 @@ public class HomeActivity extends Activity {
 
 		File[] files = directory.listFiles();
 		
-		// Create an array that is 1 item larger to hold the "Default" option
 		int fileCount = (files == null) ? 0 : files.length;
 		final String[] displayNames = new String[fileCount + 1];
 		
-		displayNames[0] = "Default (Techzaster)"; // First option is always reset
+		displayNames[0] = "Default (Techzaster)";
 
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
@@ -574,16 +571,13 @@ public class HomeActivity extends Activity {
 			@Override
 			public void onClick(android.content.DialogInterface dialog, int which) {
 				if (which == 0) {
-					// User picked the first option (Default)
 					SAVEMEM.SkinPath = ""; 
 				} else {
-					// User picked a file (subtract 1 because of the Default offset)
 					SAVEMEM.SkinPath = path + "/" + displayNames[which];
 				}
 				
 				applySkinToZaster();
 				
-				// Save the choice
 				android.content.SharedPreferences prefs = getSharedPreferences("ZasterPrefs", MODE_PRIVATE);
 				SaveSys.saveGame(HomeActivity.this, prefs.getInt("lastslot", 1));
 				
